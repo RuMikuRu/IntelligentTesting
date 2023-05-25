@@ -63,10 +63,14 @@ public class Profile extends JFrame {
 
         JPanel panelForAdmin = new JPanel();
         panelForAdmin.add(new JTable());
+
+        JPanel panelForAnalyst = new JPanel();
+
         JTabbedPane jTabbedPane = new JTabbedPane();
         jTabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
         jTabbedPane.add("Личная информация",personalInfoPanel);
-        jTabbedPane.add("Список пользователей",panelForAdmin);
+        jTabbedPane.add("Меню администратора",panelForAdmin);
+        jTabbedPane.add("Аналитика", panelForAnalyst);
         // добавление панелей на окно
         //getContentPane().add(personalInfoPanel, BorderLayout.WEST);
         //getContentPane().add(testResultsPanel, BorderLayout.CENTER);
