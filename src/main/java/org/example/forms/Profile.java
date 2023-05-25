@@ -11,50 +11,67 @@ public class Profile extends JFrame {
     private JButton deleteAccountButton;
     private JButton editPersonalInfoButton;
 
+    private JButton buttonToTest;
+    private JButton buttonToItogTest;
+
     public Profile() {
-        // настройка окна
-        setTitle("Личный кабинет");
+        // РЅР°СЃС‚СЂРѕР№РєР° РѕРєРЅР°
+        setTitle("Р›РёС‡РЅС‹Р№ РєР°Р±РёРЅРµС‚");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(600, 400);
 
-        // создание панели для личной информации
+        // СЃРѕР·РґР°РЅРёРµ РїР°РЅРµР»Рё РґР»СЏ Р»РёС‡РЅРѕР№ РёРЅС„РѕСЂРјР°С†РёРё
         personalInfoPanel = new JPanel();
-        personalInfoPanel.setBorder(BorderFactory.createTitledBorder("Личная информация"));
+        personalInfoPanel.setBorder(BorderFactory.createTitledBorder("Р›РёС‡РЅР°СЏ РёРЅС„РѕСЂРјР°С†РёСЏ"));
         personalInfoPanel.setLayout(new BoxLayout(personalInfoPanel, BoxLayout.Y_AXIS));
 
-        // добавление элементов на панель личной информации
-        personalInfoPanel.add(new JLabel("Имя:"));
+        // РґРѕР±Р°РІР»РµРЅРёРµ СЌР»РµРјРµРЅС‚РѕРІ РЅР° РїР°РЅРµР»СЊ Р»РёС‡РЅРѕР№ РёРЅС„РѕСЂРјР°С†РёРё
+        personalInfoPanel.add(new JLabel("РРјСЏ:"));
         personalInfoPanel.add(new JTextField());
-        personalInfoPanel.add(new JLabel("Фамилия:"));
+        personalInfoPanel.add(new JLabel("Р¤Р°РјРёР»РёСЏ:"));
         personalInfoPanel.add(new JTextField());
-        personalInfoPanel.add(new JLabel("Отчество"));
+        personalInfoPanel.add(new JLabel("РћС‚С‡РµСЃС‚РІРѕ"));
         personalInfoPanel.add(new JTextField());
         personalInfoPanel.add(new JLabel("Email:"));
         personalInfoPanel.add(new JTextField());
 
-        // добавление кнопки для редактирования личной информации
-        editPersonalInfoButton = new JButton("Редактировать");
+
+        // РґРѕР±Р°РІР»РµРЅРёРµ РєРЅРѕРїРєРё РґР»СЏ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ Р»РёС‡РЅРѕР№ РёРЅС„РѕСЂРјР°С†РёРё
+        editPersonalInfoButton = new JButton("Р РµРґР°РєС‚РёСЂРѕРІР°С‚СЊ");
         personalInfoPanel.add(editPersonalInfoButton);
 
-        // добавление кнопки для удаления аккаунта
-        deleteAccountButton = new JButton("Удалить аккаунт");
+        // РґРѕР±Р°РІР»РµРЅРёРµ РєРЅРѕРїРєРё РґР»СЏ СѓРґР°Р»РµРЅРёСЏ Р°РєРєР°СѓРЅС‚Р°
+        deleteAccountButton = new JButton("РЈРґР°Р»РёС‚СЊ Р°РєРєР°СѓРЅС‚");
         personalInfoPanel.add(deleteAccountButton);
 
-        // создание панели для результатов тестирования
+        buttonToTest = new JButton("РџСЂРѕР№С‚Рё С‚РµСЃС‚");
+        personalInfoPanel.add(buttonToTest);
+
+        buttonToItogTest = new JButton("РџСЂРѕР№С‚Рё РёС‚РѕРіРѕРІС‹Р№ С‚РµСЃС‚");
+        personalInfoPanel.add(buttonToItogTest);
+
+        // СЃРѕР·РґР°РЅРёРµ РїР°РЅРµР»Рё РґР»СЏ СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ С‚РµСЃС‚РёСЂРѕРІР°РЅРёСЏ
         testResultsPanel = new JPanel();
-        testResultsPanel.setBorder(BorderFactory.createTitledBorder("Результаты тестирования"));
+        testResultsPanel.setBorder(BorderFactory.createTitledBorder("Р РµР·СѓР»СЊС‚Р°С‚С‹ С‚РµСЃС‚РёСЂРѕРІР°РЅРёСЏ"));
         testResultsPanel.setLayout(new BoxLayout(testResultsPanel, BoxLayout.Y_AXIS));
 
-        // создание таблицы для отображения результатов тестирования
+        // СЃРѕР·РґР°РЅРёРµ С‚Р°Р±Р»РёС†С‹ РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ С‚РµСЃС‚РёСЂРѕРІР°РЅРёСЏ
         testResultsTable = new JTable();
         JScrollPane scrollPane = new JScrollPane(testResultsTable);
         testResultsPanel.add(scrollPane);
+        personalInfoPanel.add(testResultsPanel);
 
-        // добавление панелей на окно
-        getContentPane().add(personalInfoPanel, BorderLayout.WEST);
-        getContentPane().add(testResultsPanel, BorderLayout.CENTER);
-
-        // отображение окна
+        JPanel panelForAdmin = new JPanel();
+        panelForAdmin.add(new JTable());
+        JTabbedPane jTabbedPane = new JTabbedPane();
+        jTabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+        jTabbedPane.add("Р›РёС‡РЅР°СЏ РёРЅС„РѕСЂРјР°С†РёСЏ",personalInfoPanel);
+        jTabbedPane.add("РЎРїРёСЃРѕРє РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№",panelForAdmin);
+        // РґРѕР±Р°РІР»РµРЅРёРµ РїР°РЅРµР»РµР№ РЅР° РѕРєРЅРѕ
+        //getContentPane().add(personalInfoPanel, BorderLayout.WEST);
+        //getContentPane().add(testResultsPanel, BorderLayout.CENTER);
+        add(jTabbedPane);
+        // РѕС‚РѕР±СЂР°Р¶РµРЅРёРµ РѕРєРЅР°
         setVisible(true);
     }
 

@@ -41,7 +41,7 @@ public class RegisterMenu {
     private ApiService service;
     RegisterMenu(){
         JFrame frame = new JFrame();
-        frame.setTitle("Интеликтуальное тестирование");
+        frame.setTitle("РРЅС‚РµР»РёРєС‚СѓР°Р»СЊРЅРѕРµ С‚РµСЃС‚РёСЂРѕРІР°РЅРёРµ");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(600,600);
 
@@ -59,38 +59,38 @@ public class RegisterMenu {
         secretAnswerField = new JTextField();
         emailField = new JTextField();
         phoneField = new JTextField();
-        registerButton = new JButton("Зарегистрироваться");
-        uploadPhotoButton = new JButton("Загрузить фото");
+        registerButton = new JButton("Р—Р°СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°С‚СЊСЃСЏ");
+        uploadPhotoButton = new JButton("Р—Р°РіСЂСѓР·РёС‚СЊ С„РѕС‚Рѕ");
 
         JPanel registrationPlane = new JPanel();
         registrationPlane.setLayout(new BoxLayout(registrationPlane, BoxLayout.Y_AXIS));
-        registrationPlane.add(new JLabel("Логин:"));
+        registrationPlane.add(new JLabel("Р›РѕРіРёРЅ:"));
         registrationPlane.add(loginField);
-        registrationPlane.add(new JLabel("Пароль:"));
+        registrationPlane.add(new JLabel("РџР°СЂРѕР»СЊ:"));
         registrationPlane.add(passwordField);
-        registrationPlane.add(new JLabel("Имя:"));
+        registrationPlane.add(new JLabel("РРјСЏ:"));
         registrationPlane.add(nameField);
-        registrationPlane.add(new JLabel("Фамилия:"));
+        registrationPlane.add(new JLabel("Р¤Р°РјРёР»РёСЏ:"));
         registrationPlane.add(surnameField);
-        registrationPlane.add(new JLabel("Отчество:"));
+        registrationPlane.add(new JLabel("РћС‚С‡РµСЃС‚РІРѕ:"));
         registrationPlane.add(patronymicField);
-        registrationPlane.add(new JLabel("Дата рождения:"));
+        registrationPlane.add(new JLabel("Р”Р°С‚Р° СЂРѕР¶РґРµРЅРёСЏ:"));
         registrationPlane.add(birthdateField);
-        registrationPlane.add(new JLabel("Группа:"));
+        registrationPlane.add(new JLabel("Р“СЂСѓРїРїР°:"));
         registrationPlane.add(groupField);
-        registrationPlane.add(new JLabel("Секретный вопрос:"));
+        registrationPlane.add(new JLabel("РЎРµРєСЂРµС‚РЅС‹Р№ РІРѕРїСЂРѕСЃ:"));
         registrationPlane.add(secretQuestionField);
-        registrationPlane.add(new JLabel("Ответ на вопрос:"));
+        registrationPlane.add(new JLabel("РћС‚РІРµС‚ РЅР° РІРѕРїСЂРѕСЃ:"));
         registrationPlane.add(secretAnswerField);
-        registrationPlane.add(new JLabel("Адрес электронной почты:"));
+        registrationPlane.add(new JLabel("РђРґСЂРµСЃ СЌР»РµРєС‚СЂРѕРЅРЅРѕР№ РїРѕС‡С‚С‹:"));
         registrationPlane.add(emailField);
-        registrationPlane.add(new JLabel("Номер телефона:"));
+        registrationPlane.add(new JLabel("РќРѕРјРµСЂ С‚РµР»РµС„РѕРЅР°:"));
         registrationPlane.add(phoneField);
         registrationPlane.add(uploadPhotoButton);
         registrationPlane.add(registerButton);
 
         registerButton.addActionListener(e -> {
-            // Получение значений полей формы
+            // РџРѕР»СѓС‡РµРЅРёРµ Р·РЅР°С‡РµРЅРёР№ РїРѕР»РµР№ С„РѕСЂРјС‹
             String login = loginField.getText();
             String password = String.valueOf(passwordField.getPassword());
             String name = nameField.getText();
@@ -105,10 +105,10 @@ public class RegisterMenu {
 
 
             service = ApiUtils.getSOServer();
-            // Дополнительная обработка и проверка значений полей:
+            // Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅР°СЏ РѕР±СЂР°Р±РѕС‚РєР° Рё РїСЂРѕРІРµСЂРєР° Р·РЅР°С‡РµРЅРёР№ РїРѕР»РµР№:
             // ...
             if(password.length()<4){
-                JOptionPane.showMessageDialog(frame, "Пароль должен быть больше 4-х знаков");
+                JOptionPane.showMessageDialog(frame, "РџР°СЂРѕР»СЊ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ Р±РѕР»СЊС€Рµ 4-С… Р·РЅР°РєРѕРІ");
             }
             else{
                 newUser = new User(
@@ -127,7 +127,8 @@ public class RegisterMenu {
                         Role.USER
                 );
                 if(icon!= null){
-                    //Отпраляем на сервер всё
+                    //РћС‚РїСЂР°Р»СЏРµРј РЅР° СЃРµСЂРІРµСЂ РІСЃС‘
+                    //РўРµСЃС‚РѕРІС‹Р№ Р·Р°РїСЂРѕСЃ, СЂР°Р±РѕС‚Р°РµС‚
                     OkHttpClient client = new OkHttpClient().newBuilder()
                             .build();
                     MediaType mediaType = MediaType.parse("text/plain");
@@ -158,21 +159,21 @@ public class RegisterMenu {
                         throw new RuntimeException(ex);
                     }
                 }else {
-                    //Отправляем на сервер только пользователя, icon = null
+                    //РћС‚РїСЂР°РІР»СЏРµРј РЅР° СЃРµСЂРІРµСЂ С‚РѕР»СЊРєРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ, icon = null
                 }
                 System.out.println("newUser");
             }
 
-            // Регистрация пользователя в системе
+            // Р РµРіРёСЃС‚СЂР°С†РёСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РІ СЃРёСЃС‚РµРјРµ
             // ...
         });
 
         uploadPhotoButton.addActionListener(e -> {
-            // Открытие диалогового окна для выбора файла с фотографией
+            // РћС‚РєСЂС‹С‚РёРµ РґРёР°Р»РѕРіРѕРІРѕРіРѕ РѕРєРЅР° РґР»СЏ РІС‹Р±РѕСЂР° С„Р°Р№Р»Р° СЃ С„РѕС‚РѕРіСЂР°С„РёРµР№
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.showOpenDialog(frame);
 
-            // Получение выбранного файла
+            // РџРѕР»СѓС‡РµРЅРёРµ РІС‹Р±СЂР°РЅРЅРѕРіРѕ С„Р°Р№Р»Р°
             // ...
             icon = fileChooser.getSelectedFile();
             System.out.println(icon);
@@ -180,22 +181,22 @@ public class RegisterMenu {
 
         loginFieldPlaneLogin = new JTextField();
         passwordFieldPlaneLogin = new JPasswordField();
-        singInPlaneLogin = new JButton("Войти");
+        singInPlaneLogin = new JButton("Р’РѕР№С‚Рё");
 
         JPanel panelLogin = new JPanel();
         panelLogin.setLayout(new BoxLayout(panelLogin, BoxLayout.Y_AXIS));
 
-        panelLogin.add(new JLabel("Логин"));
+        panelLogin.add(new JLabel("Р›РѕРіРёРЅ"));
         panelLogin.add(loginFieldPlaneLogin);
 
-        panelLogin.add(new JLabel("Пароль"));
+        panelLogin.add(new JLabel("РџР°СЂРѕР»СЊ"));
         panelLogin.add(passwordFieldPlaneLogin);
 
         panelLogin.add(singInPlaneLogin);
 
 
-        tabbedPane.add("Регистрация",registrationPlane);
-        tabbedPane.add("Логин", panelLogin);
+        tabbedPane.add("Р РµРіРёСЃС‚СЂР°С†РёСЏ",registrationPlane);
+        tabbedPane.add("Р›РѕРіРёРЅ", panelLogin);
         frame.add(tabbedPane);
         frame.setVisible(true);
 

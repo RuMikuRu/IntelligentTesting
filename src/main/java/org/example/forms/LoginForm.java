@@ -11,21 +11,21 @@ public class LoginForm {
 
     public LoginForm(){
         JFrame frame = new JFrame();
-        frame.setTitle("Логин");
+        frame.setTitle("Р›РѕРіРёРЅ");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(200,200);
 
         loginField = new JTextField();
         passwordField = new JPasswordField();
-        singIn = new JButton("Войти");
+        singIn = new JButton("Р’РѕР№С‚Рё");
 
         JPanel panelLogin = new JPanel();
         panelLogin.setLayout(new BoxLayout(panelLogin, BoxLayout.Y_AXIS));
 
-        panelLogin.add(new JLabel("Логин"));
+        panelLogin.add(new JLabel("Р›РѕРіРёРЅ"));
         panelLogin.add(loginField);
 
-        panelLogin.add(new JLabel("Пароль"));
+        panelLogin.add(new JLabel("РџР°СЂРѕР»СЊ"));
         panelLogin.add(passwordField);
 
         panelLogin.add(singIn);
@@ -33,7 +33,7 @@ public class LoginForm {
         frame.add(panelLogin);
 
         singIn.addActionListener(e -> {
-            // логика для входа в систему
+            // Р»РѕРіРёРєР° РґР»СЏ РІС…РѕРґР° РІ СЃРёСЃС‚РµРјСѓ
         });
 
         frame.setVisible(true);
