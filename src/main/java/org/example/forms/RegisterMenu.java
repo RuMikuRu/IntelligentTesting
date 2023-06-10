@@ -1,20 +1,15 @@
 package org.example.forms;
 
+import com.google.gson.Gson;
 import okhttp3.*;
 import org.example.client.ApiService;
 import org.example.client.ApiUtils;
-import org.example.model.Role;
+import org.example.global.GlobalVariables;
 import org.example.model.User;
-import retrofit2.http.Multipart;
 
-import javax.print.attribute.standard.Media;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.Date;
 
 public class RegisterMenu {
     private JTextField loginField;
@@ -123,35 +118,32 @@ public class RegisterMenu {
                         secretAnswer,
                         email,
                         phone,
-                        null,
-                        Role.USER
+                        0,
+                        false
                 );
                 if(icon!= null){
                     //Отпраляем на сервер всё
                     //Тестовый запрос, работает
                     OkHttpClient client = new OkHttpClient().newBuilder()
                             .build();
-                    MediaType mediaType = MediaType.parse("text/plain");
-                    RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
-                            .addFormDataPart("login", newUser.getLogin())
-                            .addFormDataPart("password",newUser.getPassword())
-                            .addFormDataPart("firstName",newUser.getFirstName())
-                            .addFormDataPart("lastName", newUser.getLastName())
-                            .addFormDataPart("patronymic", newUser.getPatronymic())
-                            .addFormDataPart("birthday", newUser.getBirthday())
-                            .addFormDataPart("group", String.valueOf(newUser.getGroup()))
-                            .addFormDataPart("secretQuestion",newUser.getSecretQuestion())
-                            .addFormDataPart("answerOnQuestion",newUser.getAnswerOnQuestion())
-                            .addFormDataPart("email", newUser.getEmail())
-                            .addFormDataPart("numberPhone", newUser.getNumberPhone())
-                            .addFormDataPart("icon", "fgdfgd")
-                            .addFormDataPart("newIcon", icon.getAbsolutePath(),
-                                    RequestBody.create(MediaType.parse("application/octet-stream"),
-                                            new File(icon.getAbsolutePath())))
-                            .build();
+                    MediaType mediaType = MediaType.parse("application/json");
+                    RequestBody body = RequestBody.create(mediaType, " {\n  " +
+                            "\"login\" : \""+ newUser.getLogin() +"\",\n  " +
+                            "\"password\" : \""+newUser.getPassword()+"\",\n  " +
+                            "\"firstName\" : \""+newUser.getFirstName()+"\",\n  " +
+                            "\"lastName\" : \""+newUser.getLastName()+"\",\n  " +
+                            "\"patronymic\" : \""+newUser.getPatronymic()+"\",\n  " +
+                            "\"birthday\" : \""+newUser.getBirthday()+"\",\n  " +
+                            "\"group\" : "+newUser.getGroup()+",\n  " +
+                            "\"secretQuestion\" : \""+newUser.getSecretQuestion()+"\",\n  " +
+                            "\"answerOnQuestion\" : \""+newUser.getAnswerOnQuestion()+"\",\n  " +
+                            "\"email\" : \""+newUser.getEmail()+"\",\n  " +
+                            "\"numberPhone\" : \""+newUser.getNumberPhone()+"\"\n} ");
                     Request request = new Request.Builder()
                             .url("http://localhost:8080/user/add")
                             .method("POST", body)
+                            .addHeader("Accept-Charset", "application/json")
+                            .addHeader("Content-Type", "application/json")
                             .build();
                     try {
                         Response response = client.newCall(request).execute();
@@ -200,6 +192,25 @@ public class RegisterMenu {
         frame.add(tabbedPane);
         frame.setVisible(true);
 
+        singInPlaneLogin.addActionListener(e->{
+            OkHttpClient client = new OkHttpClient().newBuilder()
+                    .build();
+            MediaType mediaType = MediaType.parse("text/plain");
+            Request request = new Request.Builder()
+                    .url("http://localhost:8080/user/login?login="+loginFieldPlaneLogin.getText()+
+                            "&password="+passwordFieldPlaneLogin.getText())
+                    .method("GET",null)
+                    .build();
+            try {
+                Gson gson = new Gson();
+                Response response = client.newCall(request).execute();
+                GlobalVariables.USER = gson.fromJson(response.body().string(), User.class);
+                Profile profile = new Profile();
+                //System.out.println("User");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
 
     }
 
