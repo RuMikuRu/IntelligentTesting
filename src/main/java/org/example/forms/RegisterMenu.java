@@ -10,6 +10,7 @@ import org.example.model.User;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class RegisterMenu {
     private JTextField loginField;
@@ -160,6 +161,8 @@ public class RegisterMenu {
             // ...
         });
 
+        AtomicInteger countErrorLogin = new AtomicInteger();
+
         uploadPhotoButton.addActionListener(e -> {
             // Открытие диалогового окна для выбора файла с фотографией
             JFileChooser fileChooser = new JFileChooser();
@@ -208,7 +211,23 @@ public class RegisterMenu {
                 Profile profile = new Profile();
                 //System.out.println("User");
             } catch (IOException ex) {
-                throw new RuntimeException(ex);
+                JOptionPane.showMessageDialog(frame, "Не верно введён логин или пароль, осталось попыток " +
+                        (5-countErrorLogin.get()));
+                countErrorLogin.getAndIncrement();
+                if(countErrorLogin.get() > 5) {
+                    //Блокирование пользователя по login
+                    MediaType mediaTypeBlock = MediaType.parse("text/plain");
+                    RequestBody body = RequestBody.create(mediaTypeBlock, "");
+                    Request requestBlock = new Request.Builder()
+                            .url("http://localhost:8080/user/blocked?login="+loginFieldPlaneLogin.getText()+"&isBlocked=true")
+                            .method("PUT", body)
+                            .build();
+                    try {
+                        Response response = client.newCall(request).execute();
+                    } catch (IOException exc) {
+                        throw new RuntimeException(exc);
+                    }
+                }
             }
         });
 

@@ -152,7 +152,6 @@ public class Profile extends JFrame {
             }
 
             //Получаем новую тинформацию
-            MediaType mediaTypeClient = MediaType.parse("text/plain");
             Request requestFromClient = new Request.Builder()
                     .url("http://localhost:8080/user/login?login="+GlobalVariables.USER.getLogin()+
                             "password="+passwordField.getText())
@@ -160,7 +159,7 @@ public class Profile extends JFrame {
                     .build();
             try {
                 Gson gson = new Gson();
-                Response response = client.newCall(request).execute();
+                Response response = client.newCall(requestFromClient).execute();
                 GlobalVariables.USER = gson.fromJson(response.body().string(), User.class);
                 //System.out.println("User");
             } catch (IOException ex) {
