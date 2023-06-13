@@ -1,13 +1,25 @@
 package org.example.forms;
 
-import com.google.gson.Gson;
+import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 import okhttp3.*;
 import org.example.global.GlobalVariables;
+import org.example.model.Alert;
 import org.example.model.User;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.sql.Array;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Profile extends JFrame {
     private JTextField loginField;
@@ -38,8 +50,14 @@ public class Profile extends JFrame {
 
         // создание панели для личной информации
         personalInfoPanel = new JPanel();
+
         personalInfoPanel.setBorder(BorderFactory.createTitledBorder("Личная информация"));
         personalInfoPanel.setLayout(new BoxLayout(personalInfoPanel, BoxLayout.Y_AXIS));
+
+        JPanel panelForAdmin = new JPanel();
+
+        panelForAdmin.setBorder(BorderFactory.createTitledBorder("Уведомления"));
+        panelForAdmin.setLayout(new BoxLayout(panelForAdmin, BoxLayout.Y_AXIS));
 
         loginField = new JTextField();
         passwordField = new JPasswordField();
@@ -105,9 +123,40 @@ public class Profile extends JFrame {
         testResultsPanel.add(scrollPane);
         personalInfoPanel.add(testResultsPanel);
 
-        JPanel panelForAdmin = new JPanel();
         panelForAdmin.add(new JTable());
+        JList alertList = new JList();
+        alertList.setBorder(new LineBorder(Color.black));
+        panelForAdmin.add(alertList);
 
+        Gson gsonAlert = new Gson();
+
+        JButton refresh = new JButton("Обновить");
+        panelForAdmin.add(refresh);
+
+        refresh.addActionListener(e->{
+            OkHttpClient client = new OkHttpClient().newBuilder()
+                    .build();
+            MediaType mediaType = MediaType.parse("text/plain");
+            RequestBody body = RequestBody.create(mediaType, "");
+            Request request = new Request.Builder()
+                    .url("http://localhost:8080/alert/all")
+                    .method("GET", null)
+                    .build();
+            try {
+                Response response = client.newCall(request).execute();
+                assert response.body() != null;
+                java.lang.reflect.Type listAlertType = new TypeToken<List<Alert>>(){}.getType();
+                String jsonStr = response.body().string();
+                List<Alert> alertList1 = new Gson().fromJson(jsonStr, listAlertType);
+                for(int i =0;i<alertList1.size();i++)
+                {
+                    panelForAdmin.add(new JLabel(String.valueOf(alertList1.get(i).getId())));
+                    panelForAdmin.add(new JLabel(alertList1.get(i).getDescription()));
+                }
+            } catch (IOException ee) {
+                throw new RuntimeException(ee);
+            }
+        });
         JPanel panelForAnalyst = new JPanel();
 
         JTabbedPane jTabbedPane = new JTabbedPane();

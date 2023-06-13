@@ -1,7 +1,14 @@
 package org.example.forms;
 
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import okhttp3.*;
+import org.example.model.Test.Test;
+
 import javax.swing.*;
+import java.io.IOException;
+import java.lang.reflect.Type;
 
 public class TestGUI extends JFrame {
     private JLabel questionLabel;
@@ -18,7 +25,7 @@ public class TestGUI extends JFrame {
             {"Ответ 5.1", "Ответ 5.2", "Ответ 5.3", "Ответ 5.4", "Ответ 5.5"}
     };
 
-    public TestGUI() {
+    public TestGUI() throws IOException {
         setSize(500, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -28,20 +35,35 @@ public class TestGUI extends JFrame {
         questionLabel = new JLabel(questions[currentQuestion]);
         panel.add(questionLabel);
 
-        answerButtons = new JRadioButton[answers[currentQuestion].length];
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("text/plain");
+        RequestBody body = RequestBody.create(mediaType, "");
+        Request request = new Request.Builder()
+                .url("http://localhost:8080/tests/all")
+                .method("GET", null)
+                .build();
+        Response response = client.newCall(request).execute();
+
+        java.lang.reflect.Type itemsMapType = new TypeToken<Test>() {}.getType();
+        String responseString = response.body().string();
+        Test test = new Gson().fromJson(responseString, itemsMapType);
+
+        answerButtons = new JRadioButton[test.getQuestion().size()];
         buttonGroup = new ButtonGroup();
-        for (int i = 0; i < answerButtons.length; i++) {
-            answerButtons[i] = new JRadioButton(answers[currentQuestion][i]);
-            buttonGroup.add(answerButtons[i]);
-            panel.add(answerButtons[i]);
+        for (int i = 0; i < test.getQuestion().size(); i++) {
+            for(int k=0;k<test.getQuestion().get(i).getAnswer().size();k++) {
+                answerButtons[k] = new JRadioButton(test.getQuestion().get(i).getAnswer().get(k));
+                buttonGroup.add(answerButtons[k]);
+                panel.add(answerButtons[k]);
+            }
         }
 
         nextButton = new JButton("Ответить");
         nextButton.addActionListener(e -> {
             // Обработка ответа
-            currentQuestion++;
-            if (currentQuestion < questions.length) {
-                questionLabel.setText(questions[currentQuestion]);
+            if (currentQuestion < test.getQuestion().size()) {
+                questionLabel.setText(test.getQuestion().get(currentQuestion).getQuestion());
                 for (int i = 0; i < answerButtons.length; i++) {
                     answerButtons[i].setText(answers[currentQuestion][i]);
                     answerButtons[i].setSelected(false);
@@ -51,6 +73,7 @@ public class TestGUI extends JFrame {
                 JOptionPane.showMessageDialog(this, "Тест завершен");
                 dispose();
             }
+            currentQuestion++;
         });
         panel.add(nextButton);
 
@@ -58,7 +81,7 @@ public class TestGUI extends JFrame {
         setVisible(true);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         new TestGUI();
     }
 }
