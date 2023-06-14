@@ -49,6 +49,8 @@ public class User {
     @SerializedName("blocked")
     @Expose
     private boolean blocked;
+
+    private String role;
     public User(String login, String password, String firstName, String lastName, String patronymic, String birthday, int group, String secretQuestion, String answerOnQuestion, String email, String numberPhone, int countItogTest, boolean blocked) {
         this.login = login;
         this.password = password;

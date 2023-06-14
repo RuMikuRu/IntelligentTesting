@@ -45,27 +45,24 @@ public class TestGUI extends JFrame {
                 .build();
         Response response = client.newCall(request).execute();
 
-        java.lang.reflect.Type itemsMapType = new TypeToken<Test>() {}.getType();
+        java.lang.reflect.Type itemsMapType = new TypeToken<Test[]>() {}.getType();
         String responseString = response.body().string();
-        Test test = new Gson().fromJson(responseString, itemsMapType);
-
-        answerButtons = new JRadioButton[test.getQuestion().size()];
+        Test[] test = new Gson().fromJson(responseString, itemsMapType);
+        answerButtons = new JRadioButton[test[0].getAnswer().size()];
         buttonGroup = new ButtonGroup();
-        for (int i = 0; i < test.getQuestion().size(); i++) {
-            for(int k=0;k<test.getQuestion().get(i).getAnswer().size();k++) {
-                answerButtons[k] = new JRadioButton(test.getQuestion().get(i).getAnswer().get(k));
-                buttonGroup.add(answerButtons[k]);
-                panel.add(answerButtons[k]);
-            }
+        for (int i = 0; i < test[0].getAnswer().size(); i++) {
+                answerButtons[i] = new JRadioButton(test[currentQuestion].getAnswer().get(i));
+                buttonGroup.add(answerButtons[i]);
+                panel.add(answerButtons[i]);
         }
 
         nextButton = new JButton("Ответить");
         nextButton.addActionListener(e -> {
             // Обработка ответа
-            if (currentQuestion < test.getQuestion().size()) {
-                questionLabel.setText(test.getQuestion().get(currentQuestion).getQuestion());
+            if (currentQuestion < test.length) {
+                questionLabel.setText(test[currentQuestion].getQuestion());
                 for (int i = 0; i < answerButtons.length; i++) {
-                    answerButtons[i].setText(answers[currentQuestion][i]);
+                    answerButtons[i].setText(test[currentQuestion].getAnswer().get(i));
                     answerButtons[i].setSelected(false);
                 }
             } else {

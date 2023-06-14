@@ -4,18 +4,42 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class Test {
+    private int id;
+    private String question;
+    private List<String> answer;
+    private int idTrueAnswer;
+    public int getId() {
+        return id;
+    }
 
-    @SerializedName("question")
-    @Expose
-    private HashMap<Integer, Question> question;
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    public HashMap<Integer, Question> getQuestion() {
+    public String getQuestion() {
         return question;
     }
 
-    public void setQuestion(HashMap<Integer, Question> questions) {
-        this.question = questions;
+    public void setQuestion(String question) {
+        this.question = question;
+    }
+
+    public List<String> getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(List<String> answer) {
+        this.answer = answer;
+    }
+
+    public int getIdTrueAnswer() {
+        return idTrueAnswer;
+    }
+
+    public void setIdTrueAnswer(int idTrueAnswer) {
+        this.idTrueAnswer = idTrueAnswer;
     }
 }
