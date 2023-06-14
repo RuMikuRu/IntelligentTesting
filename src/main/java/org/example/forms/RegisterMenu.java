@@ -213,7 +213,7 @@ public class RegisterMenu {
                 Gson gson = new Gson();
                 Response response = client.newCall(request).execute();
                 GlobalVariables.USER = gson.fromJson(response.body().string(), User.class);
-                if(GlobalVariables.USER == null || !GlobalVariables.USER.getBlocked()){
+                if(GlobalVariables.USER == null && !GlobalVariables.USER.getBlocked()){
                     JOptionPane.showMessageDialog(frame, "Не верно введён логин или пароль, осталось попыток " +
                             (5-countErrorLogin.get()));
                     countErrorLogin.getAndIncrement();
