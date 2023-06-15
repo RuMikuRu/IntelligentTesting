@@ -6,6 +6,9 @@ import lombok.*;
 import javax.annotation.Generated;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.HashMap;
+
 @AllArgsConstructor
 @Generated("jsonschema2pojo")
 public class User {
@@ -50,8 +53,17 @@ public class User {
     @Expose
     private boolean blocked;
 
+    @SerializedName("testIdToGrade")
+    @Expose
+    private HashMap<Integer, Integer> testIdToGrade;
+
+    @SerializedName("role")
+    @Expose
     private String role;
-    public User(String login, String password, String firstName, String lastName, String patronymic, String birthday, int group, String secretQuestion, String answerOnQuestion, String email, String numberPhone, int countItogTest, boolean blocked) {
+
+    public User(String login, String password, String firstName, String lastName, String patronymic, String birthday,
+                int group, String secretQuestion, String answerOnQuestion, String email, String numberPhone,
+                int countItogTest, boolean blocked, String role) {
         this.login = login;
         this.password = password;
         this.firstName = firstName;
@@ -65,6 +77,7 @@ public class User {
         this.numberPhone = numberPhone;
         this.countItogTest = countItogTest;
         this.blocked = blocked;
+        this.role = role;
     }
     public String getLogin() {
         return login;
@@ -171,4 +184,11 @@ public class User {
         this.blocked = blocked;
     }
 
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
 }

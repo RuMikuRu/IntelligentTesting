@@ -213,8 +213,6 @@ public class Profile extends JFrame {
         //getContentPane().add(personalInfoPanel, BorderLayout.WEST);
         //getContentPane().add(testResultsPanel, BorderLayout.CENTER);
         add(jTabbedPane);
-        // отображение окна
-        setVisible(true);
 
 
         editPersonalInfoButton.addActionListener(e->{
@@ -273,6 +271,14 @@ public class Profile extends JFrame {
                 throw new RuntimeException(ex);
             }
         });
+        if(!GlobalVariables.USER.getRole().equals("admin") && !GlobalVariables.USER.getRole().equals("analyst")) {
+            jTabbedPane.remove(panelForAdmin);
+            jTabbedPane.remove(panelForAnalyst);
+
+            jTabbedPane.repaint();
+            jTabbedPane.revalidate();
+        }
+            setVisible(true);
     }
 
     public static void main(String[] args) throws IOException {

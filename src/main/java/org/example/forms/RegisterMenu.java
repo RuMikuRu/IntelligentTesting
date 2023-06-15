@@ -120,7 +120,8 @@ public class RegisterMenu {
                         email,
                         phone,
                         0,
-                        false
+                        false,
+                        "user"
                 );
                 if(icon!= null){
                     //Отпраляем на сервер всё

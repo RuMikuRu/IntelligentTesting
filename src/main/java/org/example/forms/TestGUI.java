@@ -32,8 +32,6 @@ public class TestGUI extends JFrame {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 
-        questionLabel = new JLabel(questions[currentQuestion]);
-        panel.add(questionLabel);
 
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
@@ -45,11 +43,16 @@ public class TestGUI extends JFrame {
                 .build();
         Response response = client.newCall(request).execute();
 
+
         java.lang.reflect.Type itemsMapType = new TypeToken<Test[]>() {}.getType();
         String responseString = response.body().string();
         Test[] test = new Gson().fromJson(responseString, itemsMapType);
         answerButtons = new JRadioButton[test[0].getAnswer().size()];
         buttonGroup = new ButtonGroup();
+
+        questionLabel = new JLabel(test[currentQuestion].getQuestion());
+        panel.add(questionLabel);
+
         for (int i = 0; i < test[0].getAnswer().size(); i++) {
                 answerButtons[i] = new JRadioButton(test[currentQuestion].getAnswer().get(i));
                 buttonGroup.add(answerButtons[i]);
