@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import okhttp3.*;
 import org.example.global.GlobalVariables;
 import org.example.model.Alert;
+import org.example.model.Test.Test;
 import org.example.model.User;
 
 import javax.swing.*;
@@ -278,6 +279,14 @@ public class Profile extends JFrame {
             jTabbedPane.repaint();
             jTabbedPane.revalidate();
         }
+
+        buttonToTest.addActionListener(e->{
+            try {
+                TestGUI goToTest = new TestGUI();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
             setVisible(true);
     }
 
