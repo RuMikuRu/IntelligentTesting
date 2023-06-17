@@ -24,24 +24,10 @@ public class MyRequest {
     }
 
     public static void requestAddUser(User user){
+        Gson gson = new Gson();
         OkHttpClient client = new OkHttpClient();
         MediaType mediaType = MediaType.parse("application/json");
-        RequestBody body = RequestBody.create(mediaType, " {\n  " +
-                "\"login\" : \"" + user.getLogin() + "\",\n  " +
-                "\"password\" : \"" + user.getPassword() + "\",\n  " +
-                "\"firstName\" : \"" + user.getFirstName() + "\",\n  " +
-                "\"lastName\" : \"" + user.getLastName() + "\",\n  " +
-                "\"patronymic\" : \"" + user.getPatronymic() + "\",\n  " +
-                "\"birthday\" : \"" + user.getBirthday() + "\",\n  " +
-                "\"group\" : " + user.getGroup().toString() + ",\n  " +
-                "\"secretQuestion\" : \"" + user.getSecretQuestion() + "\",\n  " +
-                "\"answerOnQuestion\" : \"" + user.getAnswerOnQuestion() + "\",\n  " +
-                "\"email\" : \"" + user.getEmail() + "\",\n  " +
-                "\"numberPhone\" : \"" + user.getNumberPhone() + "\",\n" +
-                "\"countItogTest\" : \"" + "0" + "\",\n" +
-                "\"blocked\" : \"" + "false" + "\",\n" +
-                "\"gradeToTestId\" : \"" + null + "\",\n" +
-                "\"role\" : \"" + "user" + "\"\n}");
+        RequestBody body = RequestBody.create(mediaType, gson.toJson(user));
         Request request = new Request.Builder()
                 .url("http://localhost:8080/user/add")
                 .method("POST", body)
@@ -56,24 +42,10 @@ public class MyRequest {
     }
 
     public static void requestUpdateUser(User user) {
+        Gson gson = new Gson();
         OkHttpClient client = new OkHttpClient();
         MediaType mediaTypeUpdate = MediaType.parse("application/json");
-        RequestBody bodyUpdate = RequestBody.create(mediaTypeUpdate, " {\n  " +
-                "\"login\" : \"" + GlobalVariables.USER.getLogin() + "\",\n  " +
-                "\"password\" : \"" + user.getPassword() + "\",\n  " +
-                "\"firstName\" : \"" + user.getFirstName() + "\",\n  " +
-                "\"lastName\" : \"" + user.getLastName() + "\",\n  " +
-                "\"patronymic\" : \"" + user.getPatronymic() + "\",\n  " +
-                "\"birthday\" : \"" + user.getBirthday() + "\",\n  " +
-                "\"group\" : " + user.getGroup().toString() + ",\n  " +
-                "\"secretQuestion\" : \"" + GlobalVariables.USER.getSecretQuestion() + "\",\n  " +
-                "\"answerOnQuestion\" : \"" + GlobalVariables.USER.getAnswerOnQuestion() + "\",\n  " +
-                "\"email\" : \"" + user.getEmail() + "\",\n  " +
-                "\"numberPhone\" : \"" + user.getNumberPhone() + "\",\n" +
-                "\"countItogTest\" : \"" + GlobalVariables.USER.getCountItogTest() + "\",\n" +
-                "\"blocked\" : \"" + user.getBlocked().toString() + "\",\n" +
-                "\"gradeToTestId\" : \"" + user.getTestIdToGrade() + "\",\n" +
-                "\"role\" : \"" + user.getRole() + "\"\n}");
+        RequestBody bodyUpdate = RequestBody.create(mediaTypeUpdate, gson.toJson(user));
         Request request = new Request.Builder()
                 .url("http://localhost:8080/user/update?login=" + GlobalVariables.USER.getLogin())
                 .method("PUT", bodyUpdate)
@@ -163,4 +135,5 @@ public class MyRequest {
             throw new RuntimeException(e);
         }
     }
+
 }
