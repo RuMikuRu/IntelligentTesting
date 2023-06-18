@@ -1,15 +1,11 @@
 package org.example.forms;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
-import com.opencsv.bean.StatefulBeanToCsv;
-import com.opencsv.bean.StatefulBeanToCsvBuilder;
-import com.opencsv.exceptions.CsvDataTypeMismatchException;
-import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import com.opencsv.exceptions.CsvValidationException;
-import okhttp3.*;
+import okhttp3.Response;
 import org.example.api.MyRequest;
 import org.example.global.GlobalVariables;
 import org.example.model.Alert;
@@ -22,7 +18,8 @@ import java.awt.*;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Profile extends JFrame {
@@ -39,7 +36,6 @@ public class Profile extends JFrame {
     private JTextField phoneField;
     private JPanel personalInfoPanel;
     private JPanel testResultsPanel;
-    private JTable testResultsTable;
     private JButton deleteAccountButton;
     private JButton editPersonalInfoButton;
 
@@ -123,12 +119,13 @@ public class Profile extends JFrame {
         testResultsPanel = new JPanel();
         testResultsPanel.setBorder(BorderFactory.createTitledBorder("Результаты тестирования"));
         testResultsPanel.setLayout(new BoxLayout(testResultsPanel, BoxLayout.Y_AXIS));
-
+        JLabel resultLabel = new JLabel(GlobalVariables.USER.getTestIdToGrade().toString());
+        testResultsPanel.add(resultLabel);
         // создание таблицы для отображения результатов тестирования
-        testResultsTable = new JTable();
-        JScrollPane scrollPane = new JScrollPane(testResultsTable);
+        JScrollPane scrollPane = new JScrollPane();
         testResultsPanel.add(scrollPane);
         personalInfoPanel.add(testResultsPanel);
+
 
         List<User> usersList =  new ArrayList<>();
 
@@ -264,16 +261,28 @@ public class Profile extends JFrame {
         panelForAnalyst.add(viewGraphicsAnalystPanel);
 
         viewGraphicsAnalystPanel.addActionListener(e->{
-            Response response = MyRequest.getLoginUser(GlobalVariables.USER.getLogin(),GlobalVariables.USER.getPassword());
+            Response responseAllUser = MyRequest.requestAllUser();
             try {
-                User user = gson.fromJson(response.body().string(), User.class);
-                List<String> stringList = user.getTestIdToGrade().values().stream().toList();
-                List<Integer> integerList = new ArrayList<>();
-                for (String s : stringList) integerList.add(Integer.parseInt(s));
-                GraphPanel.createAndShowGui(integerList);
+                User[] allUser = gson.fromJson(responseAllUser.body().string(), User[].class);
+                String searchPassword = null;
+                for (User value : allUser) {
+                    if (value.getLogin().equals(loginInAnalystPanel.getText().toString()))
+                        searchPassword = value.getPassword();
+                }
+                    Response response = MyRequest.getLoginUser(loginInAnalystPanel.getText().toString(),searchPassword);
+                try {
+                    User user = gson.fromJson(response.body().string(), User.class);
+                    List<String> stringList = user.getTestIdToGrade().values().stream().toList();
+                    List<Integer> integerList = new ArrayList<>();
+                    for (String s : stringList) integerList.add(Integer.parseInt(s));
+                    GraphPanel.createAndShowGui(integerList);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
+
         });
 
         JTabbedPane jTabbedPane = new JTabbedPane();
@@ -336,6 +345,10 @@ public class Profile extends JFrame {
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
+        });
+
+        buttonToItogTest.addActionListener(e->{
+            ItogTest itogTest = new ItogTest();
         });
             setVisible(true);
     }
