@@ -16,6 +16,7 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.io.*;
+import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -176,6 +177,39 @@ public class Profile extends JFrame {
 
         JButton importData = new JButton("Импортировать базу вопросов");
         panelForAdmin.add(importData);
+
+        JLabel loginUpdateLabel = new JLabel("Кому дать права");
+        JTextField loginUpdate = new JTextField();
+        JLabel newRole = new JLabel("Какой тип роли дать (admin, analyst, user");
+        JTextField newRoleField = new JTextField();
+        JButton updateRole = new JButton("Обновить права");
+
+        panelForAdmin.add(loginUpdateLabel);
+        panelForAdmin.add(loginUpdate);
+        panelForAdmin.add(newRole);
+        panelForAdmin.add(newRoleField);
+        panelForAdmin.add(updateRole);
+
+        updateRole.addActionListener(e->{
+            Response response = MyRequest.requestAllUser();
+            try {
+                User[] users = gson.fromJson(response.body().string(),User[].class);
+                for (User user : users) {
+                    if (user.getLogin().equals(loginUpdate.getText().toString()) && (
+                            newRoleField.getText().toString().equals("admin") ||
+                                    newRoleField.getText().toString().equals("user") ||
+                            newRoleField.getText().toString().equals("analyst"))) {
+                        user.setRole(newRoleField.getText().toString());
+                        MyRequest.requestUpdateUser(user);
+                        JOptionPane.showMessageDialog(this, "Роль успешно поменяна, попросите" +
+                                " пользователя перезайти в систему");
+                        break;
+                    }
+                }
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
 
         importData.addActionListener(e->{
             JFileChooser fileChooser = new JFileChooser();
