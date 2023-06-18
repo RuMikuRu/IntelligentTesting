@@ -2,16 +2,26 @@ package org.example.forms;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
+import com.opencsv.CSVWriter;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import okhttp3.*;
 import org.example.api.MyRequest;
 import org.example.global.GlobalVariables;
 import org.example.model.Alert;
+import org.example.model.Test.Test;
 import org.example.model.User;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.List;
 
@@ -163,6 +173,31 @@ public class Profile extends JFrame {
 
         JButton refresh = new JButton("Обновить");
         panelForAdmin.add(refresh);
+
+        JButton export = new JButton("Экспорт данных");
+        panelForAdmin.add(export);
+
+        export.addActionListener(e->{
+            try {
+                Response response = MyRequest.requestAllTest();
+                Test[] testArray = gson.fromJson(response.body().string(), Test[].class);
+                List<Test> testList = Arrays.stream(testArray).toList();
+                String cvs = "backup" + LocalDate.now() + "|"+ LocalTime.now() + ".csv";
+                File cvsFile = new File("/home/iliya/IdeaProjects/intelligentTesting/src/main/resources/backup/"+cvs);
+                FileWriter writer = new FileWriter(cvsFile);
+                CSVWriter writerCSV = new CSVWriter(writer);
+                String[] header = {"id", "question", "answer", "idTrueAnswer", "testGroup"};
+                writerCSV.writeNext(header);
+                for(Test test : testList) {
+                    String[] row = {String.valueOf(test.getId()), test.getQuestion(), String.join("|",
+                            test.getAnswer()), String.valueOf(test.getIdTrueAnswer()), test.getTestGroup()};
+                    writerCSV.writeNext(row);
+                }
+
+                writerCSV.close();
+        } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }});
 
         refresh.addActionListener(e->{
             Response response = MyRequest.requestAllAlert();

@@ -136,4 +136,18 @@ public class MyRequest {
         }
     }
 
+    public static Response requestAllTest(){
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        Request request = new Request.Builder()
+                .url("http://localhost:8080/tests/all")
+                .method("GET", null)
+                .build();
+        try {
+            return client.newCall(request).execute();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
