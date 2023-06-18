@@ -185,31 +185,36 @@ public class Profile extends JFrame {
             fileChooser.showOpenDialog(this);
 
             File importFile = fileChooser.getSelectedFile();
-            try {
-                CSVReader reader = new CSVReader(new FileReader(importFile));
+            if(importFile.getName().indexOf("csv")>-1) {
                 try {
-                    String[] headers = reader.readNext();
-                    List<Test> testList = new ArrayList<>();
-                    String[] line;
+                    CSVReader reader = new CSVReader(new FileReader(importFile));
+                    try {
+                        String[] headers = reader.readNext();
+                        List<Test> testList = new ArrayList<>();
+                        String[] line;
 
-                    while((line = reader.readNext())!=null){
-                        Test test = new Test();
-                        test.setId(Integer.parseInt(line[0]));
-                        test.setQuestion(line[1]);
-                        test.setAnswer(Arrays.asList(line[2].split("\\\\|")));
-                        test.setIdTrueAnswer(Integer.parseInt(line[3]));
-                        test.setTestGroup(line[4]);
-                        testList.add(test);
+                        while ((line = reader.readNext()) != null) {
+                            Test test = new Test();
+                            test.setId(Integer.parseInt(line[0]));
+                            test.setQuestion(line[1]);
+                            test.setAnswer(Arrays.asList(line[2].split("\\\\|")));
+                            test.setIdTrueAnswer(Integer.parseInt(line[3]));
+                            test.setTestGroup(line[4]);
+                            testList.add(test);
+                        }
+
+                        Test[] tests = testList.toArray(new Test[testList.size()]);
+                        reader.close();
+                        MyRequest.importTest(tests);
+                    } catch (IOException | CsvValidationException ex) {
+                        throw new RuntimeException(ex);
                     }
-
-                    Test[] tests = testList.toArray(new Test[testList.size()]);
-                    reader.close();
-                    MyRequest.importTest(tests);
-                } catch (IOException | CsvValidationException ex) {
+                } catch (FileNotFoundException ex) {
                     throw new RuntimeException(ex);
                 }
-            } catch (FileNotFoundException ex) {
-                throw new RuntimeException(ex);
+            }
+            else {
+                JOptionPane.showMessageDialog(this, "Не поддерживаемый формат файла");
             }
         });
 
