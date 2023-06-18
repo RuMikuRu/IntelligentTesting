@@ -159,7 +159,7 @@ public class Profile extends JFrame {
         alertList.setBorder(new LineBorder(Color.black));
         panelForAdmin.add(alertList);
 
-        Gson gsonAlert = new Gson();
+        Gson gson = new Gson();
 
         JButton refresh = new JButton("Обновить");
         panelForAdmin.add(refresh);
@@ -175,13 +175,30 @@ public class Profile extends JFrame {
                 throw new RuntimeException(ex);
             }
             List<Alert> alertList1 = new Gson().fromJson(jsonStr, listAlertType);
-                for(int i =0;i<alertList1.size();i++)
-                {
-                    panelForAdmin.add(new JLabel(String.valueOf(alertList1.get(i).getId())));
-                    panelForAdmin.add(new JLabel(alertList1.get(i).getDescription()));
-                }
+            for (Alert alert : alertList1) {
+                panelForAdmin.add(new JLabel(String.valueOf(alert.getId())));
+                panelForAdmin.add(new JLabel(alert.getDescription()));
+            }
         });
         JPanel panelForAnalyst = new JPanel();
+        panelForAnalyst.setLayout(new BoxLayout(panelForAnalyst, BoxLayout.Y_AXIS));
+        TextField loginInAnalystPanel = new TextField();
+        JButton viewGraphicsAnalystPanel = new JButton("Показать график");
+        panelForAnalyst.add(loginInAnalystPanel);
+        panelForAnalyst.add(viewGraphicsAnalystPanel);
+
+        viewGraphicsAnalystPanel.addActionListener(e->{
+            Response response = MyRequest.getLoginUser(GlobalVariables.USER.getLogin(),GlobalVariables.USER.getPassword());
+            try {
+                User user = gson.fromJson(response.body().string(), User.class);
+                List<String> stringList = user.getTestIdToGrade().values().stream().toList();
+                List<Integer> integerList = new ArrayList<>();
+                for (String s : stringList) integerList.add(Integer.parseInt(s));
+                GraphPanel.createAndShowGui(integerList);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
 
         JTabbedPane jTabbedPane = new JTabbedPane();
         jTabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -195,7 +212,6 @@ public class Profile extends JFrame {
 
 
         editPersonalInfoButton.addActionListener(e->{
-            Gson gson = new Gson();
             User updatingUser = new User(
                     GlobalVariables.USER.getLogin(),
                     passwordField.getText().toString(),

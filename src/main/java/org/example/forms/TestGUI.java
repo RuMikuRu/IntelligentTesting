@@ -11,6 +11,7 @@ import org.example.model.User;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -44,6 +45,7 @@ public class TestGUI extends JFrame {
         java.lang.reflect.Type itemsMapType = new TypeToken<Test[]>() {}.getType();
         String responseString = response.body().string();
         Test[] test = new Gson().fromJson(responseString, itemsMapType);
+
         answerButtons = new JRadioButton[test[0].getAnswer().size()];
         buttonGroup = new ButtonGroup();
 
