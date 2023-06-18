@@ -3,6 +3,7 @@ package org.example.api;
 import com.google.gson.Gson;
 import okhttp3.*;
 import org.example.global.GlobalVariables;
+import org.example.model.Test.Test;
 import org.example.model.User;
 
 import javax.swing.*;
@@ -66,7 +67,6 @@ public class MyRequest {
                 .method("GET", null)
                 .build();
         try {
-            Gson gson = new Gson();
             Response response = client.newCall(requestFromClient).execute();
             return response;
             //System.out.println("User");
@@ -145,6 +145,24 @@ public class MyRequest {
                 .build();
         try {
             return client.newCall(request).execute();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void importTest(Test[] tests){
+        Gson gson = new Gson();
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("application/json");
+        RequestBody body = RequestBody.create(mediaType, gson.toJson(tests));
+        Request request = new Request.Builder()
+                .url("http://localhost:8080/tests/import")
+                .method("POST", body)
+                .addHeader("Content-Type", "application/json")
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

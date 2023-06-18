@@ -2,11 +2,13 @@ package org.example.forms;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
+import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
+import com.opencsv.exceptions.CsvValidationException;
 import okhttp3.*;
 import org.example.api.MyRequest;
 import org.example.global.GlobalVariables;
@@ -17,9 +19,7 @@ import org.example.model.User;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
@@ -176,6 +176,42 @@ public class Profile extends JFrame {
 
         JButton export = new JButton("Экспорт данных");
         panelForAdmin.add(export);
+
+        JButton importData = new JButton("Импортировать базу вопросов");
+        panelForAdmin.add(importData);
+
+        importData.addActionListener(e->{
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.showOpenDialog(this);
+
+            File importFile = fileChooser.getSelectedFile();
+            try {
+                CSVReader reader = new CSVReader(new FileReader(importFile));
+                try {
+                    String[] headers = reader.readNext();
+                    List<Test> testList = new ArrayList<>();
+                    String[] line;
+
+                    while((line = reader.readNext())!=null){
+                        Test test = new Test();
+                        test.setId(Integer.parseInt(line[0]));
+                        test.setQuestion(line[1]);
+                        test.setAnswer(Arrays.asList(line[2].split("\\\\|")));
+                        test.setIdTrueAnswer(Integer.parseInt(line[3]));
+                        test.setTestGroup(line[4]);
+                        testList.add(test);
+                    }
+
+                    Test[] tests = testList.toArray(new Test[testList.size()]);
+                    reader.close();
+                    MyRequest.importTest(tests);
+                } catch (IOException | CsvValidationException ex) {
+                    throw new RuntimeException(ex);
+                }
+            } catch (FileNotFoundException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
 
         export.addActionListener(e->{
             try {
